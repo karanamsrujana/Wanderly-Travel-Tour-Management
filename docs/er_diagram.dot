@@ -1,0 +1,25 @@
+graph ER {
+  graph [rankdir=LR, bgcolor="white", pad=0.4, nodesep=0.5, ranksep=1.1, fontname="Helvetica"];
+  node  [fontname="Helvetica", fontsize=11];
+  edge  [fontname="Helvetica", fontsize=10, color="#12263A"];
+
+  node [shape=plaintext];
+  users [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>USERS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>user_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">name</TD></TR><TR><TD ALIGN="LEFT">email (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">password_hash</TD></TR><TR><TD ALIGN="LEFT">phone</TD></TR><TR><TD ALIGN="LEFT">role {admin, customer}</TD></TR><TR><TD ALIGN="LEFT">created_at, is_active</TD></TR></TABLE>>];
+  destinations [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>DESTINATIONS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>destination_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">name, country (UNIQUE pair)</TD></TR><TR><TD ALIGN="LEFT">region</TD></TR><TR><TD ALIGN="LEFT">description</TD></TR><TR><TD ALIGN="LEFT">best_season</TD></TR></TABLE>>];
+  guides [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>GUIDES</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>guide_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">name</TD></TR><TR><TD ALIGN="LEFT">email (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">phone, languages</TD></TR><TR><TD ALIGN="LEFT">experience_years, rating</TD></TR></TABLE>>];
+  hotels [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>HOTELS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>hotel_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">destination_id (FK)</TD></TR><TR><TD ALIGN="LEFT">name</TD></TR><TR><TD ALIGN="LEFT">star_rating (1-5)</TD></TR><TR><TD ALIGN="LEFT">price_per_night</TD></TR></TABLE>>];
+  tours [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FBEFD5"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>TOURS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>tour_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">destination_id (FK)</TD></TR><TR><TD ALIGN="LEFT">guide_id (FK, nullable)</TD></TR><TR><TD ALIGN="LEFT">title, description</TD></TR><TR><TD ALIGN="LEFT">duration_days, price</TD></TR><TR><TD ALIGN="LEFT">max_seats, available_seats</TD></TR><TR><TD ALIGN="LEFT">start_date, end_date</TD></TR><TR><TD ALIGN="LEFT">difficulty, status</TD></TR></TABLE>>];
+  tour_hotels [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>TOUR_HOTELS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>tour_id</U> (PK, FK)</TD></TR><TR><TD ALIGN="LEFT"><U>hotel_id</U> (PK, FK)</TD></TR><TR><TD ALIGN="LEFT">nights</TD></TR></TABLE>>];
+  bookings [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FBEFD5"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>BOOKINGS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>booking_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">user_id (FK)</TD></TR><TR><TD ALIGN="LEFT">tour_id (FK)</TD></TR><TR><TD ALIGN="LEFT">seats (1-10), total_amount</TD></TR><TR><TD ALIGN="LEFT">status, booking_date</TD></TR></TABLE>>];
+  payments [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E3EEEB"><TR><TD BGCOLOR="#12263A"><FONT COLOR="white"><B>PAYMENTS</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>payment_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">booking_id (FK, UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">amount, method, status</TD></TR><TR><TD ALIGN="LEFT">paid_at</TD></TR></TABLE>>];
+  audit_log [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F1F1F1"><TR><TD BGCOLOR="#555555"><FONT COLOR="white"><B>AUDIT_LOG</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><U>log_id</U> (PK)</TD></TR><TR><TD ALIGN="LEFT">table_name, action</TD></TR><TR><TD ALIGN="LEFT">record_id, details</TD></TR></TABLE>>];
+
+  destinations -- hotels      [headlabel="N", taillabel="1", label="has"];
+  destinations -- tours       [headlabel="N", taillabel="1", label="hosts"];
+  guides       -- tours       [headlabel="N", taillabel="0..1", label="leads"];
+  tours        -- tour_hotels [headlabel="N", taillabel="1"];
+  hotels       -- tour_hotels [headlabel="N", taillabel="1", label="stay (M:N)"];
+  users        -- bookings    [headlabel="N", taillabel="1", label="makes"];
+  tours        -- bookings    [headlabel="N", taillabel="1", label="booked in"];
+  bookings     -- payments    [headlabel="1", taillabel="1", label="paid by"];
+}
