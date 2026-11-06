@@ -1,3 +1,9 @@
+Team:
+
+Karanam Srujana
+
+KP Preetika Setty
+
 # Wanderly: Travel & Tour Management System
 DBMS Experiential Learning, Level 3 project (PES University).
 Stack: **Next.js 14** (UI + API route handlers) · **MySQL 8** (relational core) · **MongoDB** (reviews, itineraries, activity logs) · JWT auth (httpOnly cookie) · Git/GitHub.
